@@ -1,0 +1,29 @@
+{
+  "name": "portfolio-nodejs-aws-twitterapi",
+  "version": "1.0.0",
+  "description": "zemoga test nodejs+aws+twitterapi",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cristhianDt/portfolio-nodejs-aws-twitterapi.git"
+  },
+  "keywords": [
+    "jobs",
+    "offers",
+    "zemoga",
+    "test",
+    "nodejs"
+  ],
+  "author": "@cristhianDt",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cristhianDt/portfolio-nodejs-aws-twitterapi/issues"
+  },
+  "homepage": "https://github.com/cristhianDt/portfolio-nodejs-aws-twitterapi#readme",
+  "dependencies": {
+    "express": "^4.17.3"
+  }
+}
