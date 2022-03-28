@@ -1,4 +1,4 @@
-const { logger } = require('../api/config/logger/logger')
+const { logger } = require('../logger/logger')
 
 exports.printBody = (req, res, next) => {
   let body = null;
@@ -25,7 +25,7 @@ exports.printBody = (req, res, next) => {
   next()
 }
 
-exports.handleError = (error, req, res, next) => {
+exports.errorHandler = (error, req, res, next) => {
   const errorObj = {
     type: error.name,
     message: error.message,

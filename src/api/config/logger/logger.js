@@ -1,32 +1,39 @@
-const log4js = require('log4js');
-const logger = log4js.getLogger('logfile');
+const winston = require('winston')
+const { format } = winston
+const { combine, colorize, prettyPrint, timestamp, printf } = format
 
-const init = async ( config)=>{
-  return new Promise( ( resolve,reject)=>{
-    log4js.configure({
-      appenders: {
-        logfile: {
-          type: "file",
-          filename: config.logs.path,
-          maxLogSize: config.logs.maxLogSize,
-          backups: config.logs.rotates,
-          compress: true
-        },
-        audit: {
-          type: "console"
-        }
-      },
-      categories: {
-        default: { appenders: ['audit','logfile'], level: config.logs.level }
-      }
-    });
-    logger.info(`Starting ${config.app_name} - ${config.version}`);
-    logger.info(`Memory usage: ${(process.memoryUsage().rss / 1048576).toFixed(3)}  MB`);
-    resolve();
-  });
-};
+const logLevel = 'info'
 
-module.exports = {
-  init: init,
-  logger: logger
+function customLogMessage(info) {
+  const { timestamp, level, message, ...rest } = info
+  const baseMessage = `${timestamp} ${level}: ${message}`
+  return Object.keys(rest).length <= 0 ? baseMessage : `${baseMessage} ${JSON.stringify(rest)}`
 }
+
+function customJsonLogMessage(info) {
+  return JSON.stringify({ ...info })
+}
+
+// Default logger
+let loggerConfig = {
+  transports: [
+    new winston.transports.Console({
+      level: logLevel,
+      handleExceptions: true,
+      format: combine(colorize(), prettyPrint(), timestamp(), printf(customLogMessage)),
+    }),
+    new winston.transports.File({ /*level: 'error', */filename: './logs/portfolio-errors.log' }),
+  ],
+}
+
+loggerConfig.transports = [
+  new winston.transports.Console({
+    level: logLevel,
+    handleExceptions: true,
+    format: combine(timestamp(), printf(customJsonLogMessage)),
+  }),
+]
+
+let logger = winston.createLogger(loggerConfig)
+
+module.exports = logger
