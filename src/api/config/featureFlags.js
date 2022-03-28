@@ -9,6 +9,7 @@ function getFeatureFlagValueFromEnv(feature) {
 
 const featureNames = [
   'USE_DYNAMODB',
+  'USE_MONGOOSE',
 ]
 
 const features = Object.freeze(Object.fromEntries(featureNames.map((featureName) => [featureName, featureName])))

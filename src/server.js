@@ -10,7 +10,8 @@ const path = require('path')
 
 const logger = require('./api/config/logger/logger')
 const celebrateMiddleware = require('./api/config/middleware/celebrateMiddleware')
-const {SystemError} = require('./api/common/customErrors')
+const { printBody } = require('./api/config/middleware/general')
+const { SystemError } = require('./api/common/customErrors')
 
 const port = parseInt(process.env.APP_PORT, 10) || 3000
 const ENDPOINT = `${process.env.APP_DOMAIN}:${port}`
@@ -33,14 +34,16 @@ const start = async () => {
     let server = http.createServer(app)
 
     app.use(bodyParser.json())
-    app.use(bodyParser.urlencoded({extended: false}))
+    app.use(bodyParser.urlencoded({ extended: false }))
     app.use(cookieParser())
     app.use(cors())
     app.use(express.static(publicPath))
 
     /**
      * REGISTERING ROUTES */
+    app.use(printBody)
     app.use('/api/v1/portfolios', portfolios)
+
     app.use(celebrateMiddleware)
 
     if (!getFeatureFlagValue(USE_DYNAMODB)) {

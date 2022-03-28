@@ -1,14 +1,20 @@
 const { MongoClient, ObjectId } = require('mongodb')
-const logger = require("../logger/logger")
+const mongoose = require('mongoose')
+const logger = require('../logger/logger')
 const {
   MONGODB_CLUSTER_URL,
   MONGODB_DATABASE_NAME,
   MONGODB_USERNAME,
   MONGODB_PASSWORD
 } = process.env
+const {
+  getFeatureFlagValue,
+  features: { USE_MONGOOSE }
+} = require('../featureFlags')
+const shouldUseMongoose = getFeatureFlagValue(USE_MONGOOSE)
 
 const uri = `mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGODB_CLUSTER_URL}/${MONGODB_DATABASE_NAME}?retryWrites=true&writeConcern=majority`
-logger.info(`Mongodb uri: ${uri}`)
+logger.info(`Mongodb uri: ${uri} mongoose: ${shouldUseMongoose}`)
 // noinspection JSCheckFunctionSignatures
 const client = new MongoClient(uri, {
   connectTimeoutMS: 60000,
@@ -42,5 +48,7 @@ exports.init = () => {
     }
   })
 }
+
+exports.db = shouldUseMongoose && mongoose.createConnection(uri) //https://mongoosejs.com/docs/2.7.x/docs/model-definition.html | https://mongoosejs.com/docs/connections.html
 
 exports.ObjectID = ObjectId
