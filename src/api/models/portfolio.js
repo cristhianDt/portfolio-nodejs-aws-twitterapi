@@ -1,9 +1,7 @@
 /**
  * {"Id":{"$oid":"62411e8a54155a5b4f06e55f"},"description":"Fighter machines","experienceSummary":"I have been training my hole life, since I was a kid, my caretaker, Rost, taught me how to fight, how to stay one step ahead of machines in order to deal with them. I am very capable to accomplishing differents goals either with a team or alone.","imageUrl":null,"lastNames":"Hoekstra 2","names":"Aloy","tittle":"The anointed","twitterUserId":"1504634529276903424","twitterUserName":"Aloy Hoekstra","userId":"116","address":"Nora Lands","email":"aloy@gmail.com","experience":"7 years","imagePath":"profilePicture.png","name":"Aloy Hoekstra","phone":"1547269854","twitterUser":"@AloyHoekstra75","zipCode":"81658","title":"The anointed"}
  */
-const { db } = require('../config/database/mongo')
 const mongoose = require('mongoose')
-
 const { Schema } = mongoose;
 
 const PortfolioSchema = new Schema({
@@ -36,7 +34,9 @@ const PortfolioSchema = new Schema({
   twitterUser: String,
   zipCode: String,
   title: String
-});
+}, { collection: 'Portfolio' });
 
-// https://mongoosejs.com/docs/connections.html
-module.exports = db.model( 'Portfolio', PortfolioSchema, 'Portfolio' );
+module.exports = {
+  Portfolio: PortfolioSchema
+}
+

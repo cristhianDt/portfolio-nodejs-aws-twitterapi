@@ -12,21 +12,16 @@ exports.printBody = (req, res, next) => {
     }
   })
   res.on('finish', function () {
-    let req = this.req
-    let remote = ''
-    if (req.socket.localAddress && req.socket.localAddress) {
-      remote = req.socket.localAddress
-    }
-    let user = req.user ? req.user.email : null
-    if (!user) {
-      if (req.headers.hasOwnProperty('authorization'))
-        user = req.headers.authorization
-    }
-    if ('GET' === req.method) {
-      logger.info(req.method, user, '[', remote.replace(/^.*:/, ''), '] ->', req.originalUrl, JSON.stringify(req.query), '>', this.statusCode)
-    } else {
-      logger.info(req.method, user, '[', remote.replace(/^.*:/, ''), '] ->', req.originalUrl, JSON.stringify(body), '>', this.statusCode)
-    }
+    let {  statusCode, req: { method, query, body, originalUrl } } = this
+    logger.info(`Res to ${method}`, {
+      request: {
+        originalUrl,
+        method,
+        statusCode,
+        ...(!isEmpty(body) && { body }),
+        ...(!isEmpty(query) && { query })
+      }
+    })
   })
   next()
 }
