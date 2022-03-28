@@ -25,7 +25,7 @@ const {
 /**
  * API ROUTES
  */
-// TODO: declare routes here
+const portfolios = require('./api/routes/v1/portfolioRoutes')
 
 const start = async () => {
   try {
@@ -40,8 +40,7 @@ const start = async () => {
 
     /**
      * REGISTERING ROUTES */
-    // TODO: register routes here
-
+    app.use('/api/v1/portfolios', portfolios)
     app.use(celebrateMiddleware)
 
     if (!getFeatureFlagValue(USE_DYNAMODB)) {
