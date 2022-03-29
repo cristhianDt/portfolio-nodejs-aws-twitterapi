@@ -19,11 +19,11 @@
     <div class="container">
         <div class="row row-cols-2 justify-content-center">
             <div class="col-md-12">
-                <button id="edit-portfolio-btn" type="button" class="btn btn-dark float-right" data-toggle="modal" data-target="#exampleModal">Edit</button>
+                <button id="edit-portfolio-btn" type="button" class="btn btn-dark float-right" data-toggle="modal" data-target="#editPortfolioModal">Edit</button>
             </div>
             <div class="col-md-2 order-md-1 mb-4">
                 <!-- TODO: get user image || default image -->
-                <img id="user-image" src="assets/images/users/default-image.png" class="rounded col-md-12" alt="user-image">
+                <img id="user-image" src="" class="rounded col-md-12" alt="user-image">
                 <br>
                 <br>
                 <div class="col-md-12 bg-white border rounded">
@@ -50,7 +50,7 @@
         </div>
     </div>
     <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="editPortfolioModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -72,9 +72,9 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="imagePath">Replace Image</label>
-                            <input type="file" class="form-control-file" id="imagePath" name="imagePath" accept="image/png, image/jpeg" aria-describedby="validationImagePathFeedback">
-                            <div id="validationImagePathFeedback" class="invalid-feedback"></div>
+                            <label for="imageUrl">Replace Image</label>
+                            <input type="file" class="form-control-file" id="imageUrl" name="imageUrl" accept="image/png, image/jpeg" aria-describedby="validationImageUrlFeedback">
+                            <div id="validationImageUrlFeedback" class="invalid-feedback"></div>
                         </div>
                         <div class="form-group">
                             <label for="experienceSummary">Work Experience</label>

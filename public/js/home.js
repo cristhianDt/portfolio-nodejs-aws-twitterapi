@@ -15,17 +15,17 @@ const defaultPortfolio = {
   names: 'John',
   lastNames: 'Snow',
   experience: null,
-  imagePath: null,
+  imageUrl: 'assets/images/users/default-image.png',
   experienceSummary: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ultrices, augue et vehicula pellentesque, ipsum velit viverra neque, a semper turpis eros a odio. Vestibulum luctus libero vehicula nisi porta rutrum. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam bibendum mollis urna, vel gravida nisi faucibus eget. Mauris sed fermentum felis. Nullam ut erat a mi pulvinar consequat. Etiam eu molestie ex, sit amet vehicula dui. Nunc faucibus justo elit, id elementum urna rhoncus id. Aliquam ut molestie lacus, eu pellentesque nisl. Morbi suscipit egestas purus nec eleifend. Curabitur laoreet velit faucibus dictum tincidunt.\n'
 }
 
 const setInformation = (info) => {
   portfolio = info?.portfolio ?? defaultPortfolio
-  console.log(portfolio)
   let userImageElement = $('#user-image')
   let userFullNameElement = $('#user-full-name')
   let userExpSummaryElement = $('#user-experience')
   let userTimelineTitleElement = $('#user-timeline-title')
+  userImageElement.attr('src', portfolio.imageUrl)
   userFullNameElement.text(`${portfolio.names} ${portfolio.lastNames}`)
   userTimelineTitleElement.text(`${portfolio.names}'s Timeline`)
   userExpSummaryElement.text(portfolio.experienceSummary)
@@ -54,30 +54,35 @@ const savePortfolio = () => {
     alert('Error portfolio does not exist')
   }
   let formData = new FormData(),
-      names = $('input#names').val(),
-      lastNames = $('input#lastNames').val(),
-      experienceSummary = $('textarea#experienceSummary').val(),
-      file = $('#imagePath').prop("files")[0]
-  formData.append('imagePath', file)
+    names = $('input#names').val(),
+    lastNames = $('input#lastNames').val(),
+    experienceSummary = $('textarea#experienceSummary').val(),
+    file = $('#imageUrl').prop('files')[0]
+  formData.append('imageUrl', file)
   formData.append('names', names)
   formData.append('lastNames', lastNames)
   formData.append('experienceSummary', experienceSummary)
   $.ajax({
     url: `${getPortfolioEndpoint}/${(portfolio?.id ?? portfolio?._id)}`,
-    type: "POST",
+    type: 'POST',
     async: true,
     data: formData,
     cache: false,
     contentType: false,
     processData: false,
     timeout: 120000,
-    success: function (responseObj) {
-      console.log(responseObj)
+    success: function (updatedPortfolio) {
+      $('#editPortfolioModal').modal('hide')
+      setInformation({ portfolio: {...portfolio, ...updatedPortfolio.portfolio} })
     },
     error: function (jqXHR) {
-      console.log(jqXHR)
+      if (typeof jqXHR != 'undefined' && jqXHR != null) {
+        const res = jqXHR.hasOwnProperty('responseJSON') ? jqXHR.responseJSON : null
+        alert(res?.message ?? 'Error')
+      }
     },
     complete: function (jqXHR, textStatus) {
+      $('#imageUrl').val('')
     }
   })
 }
@@ -92,17 +97,17 @@ const checkFileSize = (file, max = 2097152/*1048576/*4194304*/) => {
   return !Number.isInteger(file.size) || max < file.size
 }
 
-const checkFileType = (file, types = ['image/png', 'image/jpeg']) => {
+const checkFileType = (file, types = [ 'image/png', 'image/jpeg' ]) => {
   return !types.includes(file.type)
 }
 
 $(document).ready(function () {
   setInformation()
   getPortfolio()
-  $("#save-portfolio").click(function() {
+  $('#save-portfolio').click(function () {
     savePortfolio()
   })
-  $('#imagePath').change(function (event) {
+  $('#imageUrl').change(function (event) {
     let target = $(event.target), error = null
     if (checkFileSize(event.target.files[0])) {
       error = 'The file can not be larger than 2 MB'
@@ -114,7 +119,7 @@ $(document).ready(function () {
       target.val('')
       target.addClass('is-invalid')
       console.log(`image path error: ${error}`)
-      $('#validationImagePathFeedback').html(error)
+      $('#validationImageUrlFeedback').html(error)
     } else {
       target.removeClass('is-invalid')
     }
