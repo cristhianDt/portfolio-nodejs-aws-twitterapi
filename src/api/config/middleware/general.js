@@ -18,19 +18,17 @@ exports.printBody = (req, res, next) => {
         originalUrl,
         method,
         statusCode,
-        ...(!isEmpty(body) && { body }),
-        ...(!isEmpty(query) && { query })
       }
     })
   })
   next()
 }
 
-exports.errorHandler = (error, req, res, next) => {
+exports.errorHandler = (res, error) => {
   const errorObj = {
     type: error.name,
     message: error.message,
-    status: error.status ? error.status : 500,
+    status: error?.status ?? 500,
     context: error.context,
   }
 

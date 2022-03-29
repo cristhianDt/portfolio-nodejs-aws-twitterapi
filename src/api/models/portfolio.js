@@ -7,10 +7,7 @@ const { Schema } = mongoose;
 const PortfolioSchema = new Schema({
   description: String,
   experienceSummary: String,
-  imageUrl: {
-    type: String,
-    default: null
-  },
+  imageUrl: String,
   lastNames: String,
   names: String,
   twitterUserId: String,

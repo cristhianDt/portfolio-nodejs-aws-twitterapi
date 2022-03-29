@@ -11,8 +11,8 @@ const {
   getFeatureFlagValue,
   features: { USE_MONGOOSE }
 } = require('../featureFlags')
-const schemas = require('../../common/getSchemas')
 const shouldUseMongoose = getFeatureFlagValue(USE_MONGOOSE)
+const schemas = require('../../common/getSchemas')
 
 const uri = `mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGODB_CLUSTER_URL}/${MONGODB_DATABASE_NAME}?retryWrites=true&writeConcern=majority`
 logger.info(`Mongodb uri: ${uri} using mongoose: ${shouldUseMongoose}`)
@@ -71,4 +71,4 @@ async function registerModels(db) {
 
 exports.db = shouldUseMongoose && mongoose.createConnection(uri) //https://mongoosejs.com/docs/2.7.x/docs/model-definition.html | https://mongoosejs.com/docs/connections.html
 
-exports.ObjectID = ObjectId
+exports.ObjectId = ObjectId
