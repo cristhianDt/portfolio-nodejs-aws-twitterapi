@@ -14,7 +14,6 @@ function customJsonLogMessage(info) {
   return JSON.stringify({ ...info })
 }
 
-// Default logger
 let loggerConfig = {
   transports: [
     new winston.transports.Console({
@@ -25,14 +24,6 @@ let loggerConfig = {
     new winston.transports.File({ /*level: 'error', */filename: './logs/portfolio-errors.log' }),
   ],
 }
-
-loggerConfig.transports = [
-  new winston.transports.Console({
-    level: logLevel,
-    handleExceptions: true,
-    format: combine(timestamp(), printf(customJsonLogMessage)),
-  }),
-]
 
 let logger = winston.createLogger(loggerConfig)
 
