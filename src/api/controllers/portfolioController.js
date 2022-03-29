@@ -58,6 +58,9 @@ async function updatePortfolio(portfolioId, body) {
     names,
     experienceSummary,
     lastNames,
+    // twitterUserId: "1508655642709483524",
+    // twitterUser: "C. David",
+    // twitterUserName: "CDavid93327931",
     ...(imageUrl && { imageUrl })
   }
   if (shouldUseMongoose) {

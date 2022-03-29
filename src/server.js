@@ -26,6 +26,7 @@ const {
 /**
  * API ROUTES
  */
+const twitter = require('./api/routes/v1/twitterRoutes')
 const portfolios = require('./api/routes/v1/portfolioRoutes')
 
 const start = async () => {
@@ -42,6 +43,7 @@ const start = async () => {
     /**
      * REGISTERING ROUTES */
     app.use(printBody)
+    app.use('/api/v1/twitter', twitter)
     app.use('/api/v1/portfolios', portfolios)
 
     app.use(celebrateMiddleware)

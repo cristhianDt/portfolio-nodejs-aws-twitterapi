@@ -10,8 +10,6 @@ const PortfolioSchema = new Schema({
   imageUrl: String,
   lastNames: String,
   names: String,
-  twitterUserId: String,
-  twitterUserName: String,
   userId: {
     type: String,
     index: true,
@@ -28,7 +26,9 @@ const PortfolioSchema = new Schema({
   experience: String,
   name: String,
   phone: String,
+  twitterUserId: String,
   twitterUser: String,
+  twitterUserName: String,
   zipCode: String,
   title: String
 }, { collection: 'Portfolio' });
