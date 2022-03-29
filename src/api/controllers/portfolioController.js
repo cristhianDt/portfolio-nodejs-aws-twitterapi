@@ -49,6 +49,9 @@ async function updatePortfolio(portfolioId, body) {
     if (typeof wasSaved !== 'undefined') {
       throw new SystemError(`Error saving file : ${wasSaved.message}`)
     }
+    if (portfolio.imageUrl) {
+      await fileServerHelper.deleteFileInServer(portfolio.imageUrl)
+    }
     imageUrl = `${DIR_TO_SAVE_FILES}/${portfolioId}/${fileName}.${ext}`
   }
   const update = {
