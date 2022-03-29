@@ -18,6 +18,9 @@
     <br>
     <div class="container">
         <div class="row row-cols-2 justify-content-center">
+            <div class="col-md-12">
+                <button id="edit-portfolio-btn" type="button" class="btn btn-dark float-right" data-toggle="modal" data-target="#exampleModal">Edit</button>
+            </div>
             <div class="col-md-2 order-md-1 mb-4">
                 <!-- TODO: get user image || default image -->
                 <img id="user-image" src="assets/images/users/default-image.png" class="rounded col-md-12" alt="user-image">
@@ -33,7 +36,7 @@
                 </div>
             </div>
             <div class="col-md-5 order-md-2">
-                <h2></h2>
+                <h2 id="user-full-name"></h2>
                 <div class="col-md-12 bg-white border rounded">
                     <br>
                     <h3>
@@ -42,6 +45,46 @@
                     <hr>
                     <p id="user-experience" class="text-break">
                     </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Portfolio</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="edit-portfolio">
+                        <div class="form-row">
+                            <div class="col-md-6 mb-3">
+                                <label for="names">First name</label>
+                                <input type="text" class="form-control" id="names" name="names" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="lastNames">Last name</label>
+                                <input type="text" class="form-control" id="lastNames" name="lastNames" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="imagePath">Replace Image</label>
+                            <input type="file" class="form-control-file" id="imagePath" name="imagePath" accept="image/png, image/jpeg" aria-describedby="validationImagePathFeedback">
+                            <div id="validationImagePathFeedback" class="invalid-feedback"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="experienceSummary">Work Experience</label>
+                            <textarea class="form-control" id="experienceSummary" name="experienceSummary" rows="5"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button id="save-portfolio" type="button" class="btn btn-primary">Save</button>
                 </div>
             </div>
         </div>
