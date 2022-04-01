@@ -62,8 +62,9 @@ async function upSertPortfolio(portfolioId, body) {
     names,
     experienceSummary,
     lastNames,
-    ...(twitterUserId && { userId: twitterUserId, twitterUserId, twitterUser, twitterUserName }),
-    ...(imageUrl && { imageUrl })
+    ...(imageUrl && { imageUrl }),
+    ...(twitterUserId && { twitterUserId, twitterUser, twitterUserName }),
+    ...((!portfolio || (portfolio && !portfolio?.userId)) && twitterUserId && { userId: twitterUserId, }),
   }
   const result = await db.client.upSertPortfolio(portfolioId, update)
   return result === 200 ? { ...(portfolio || {}), ...update } : result

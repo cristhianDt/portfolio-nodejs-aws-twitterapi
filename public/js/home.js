@@ -20,15 +20,15 @@ const defaultPortfolio = localStorage.getItem('portfolio') && JSON.parse(localSt
 }
 
 const setInformation = (info) => {
-  portfolio = (info?.portfolio?.id || info?.portfolio?.portfolioId) ? info.portfolio : { ...defaultPortfolio }
+  portfolio = (info?.portfolio?._id || info?.portfolio?.portfolioId || info?.portfolio?.id) ? info.portfolio : { ...defaultPortfolio }
   let userImageElement = $('#user-image')
   let userFullNameElement = $('#user-full-name')
   let userExpSummaryElement = $('#user-experience')
   let userTimelineTitleElement = $('#user-timeline-title')
-  userImageElement.attr('src', portfolio.imageUrl)
+  userImageElement.attr('src', portfolio?.imageUrl)
   userFullNameElement.text(`${portfolio.names} ${portfolio.lastNames}`)
   userTimelineTitleElement.text(`${portfolio.names}'s Timeline`)
-  userExpSummaryElement.html(portfolio.experienceSummary.replaceAll('\r\n', '<br>'))
+  userExpSummaryElement.html(portfolio?.experienceSummary.replaceAll('\r\n', '<br>') ?? '')
   /* edit form */
   $('input#names').val(portfolio.names)
   $('input#email').val(portfolio.email)
