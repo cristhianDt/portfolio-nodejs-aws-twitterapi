@@ -49,11 +49,11 @@ const start = async () => {
     app.use(celebrateMiddleware)
 
     if (!getFeatureFlagValue(USE_DYNAMODB)) {
-      const mongo = require('./api/config/database/mongo')
+      const mongo = require('./api/common/database/mongo')
       await mongo.init().then(_db => {
         console.log("MONGODB CONNECTION OK");
       }).catch(err => {
-        const msg = `MONGODB error:${err.message ? err.message : err}`
+        const msg = `MONGODB error: ${err.message ? err.message : err}`
         logger.error(msg)
         throw new SystemError(msg)
       })

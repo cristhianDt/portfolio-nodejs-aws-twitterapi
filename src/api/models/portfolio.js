@@ -12,14 +12,14 @@ const PortfolioSchema = new Schema({
   names: String,
   userId: {
     type: String,
-    index: true,
+    // index: true,
     unique: true,
     required: true
   },
   address: String,
   email: {
     type: String,
-    index: true,
+    // index: true,
     unique: true,
     required: true
   },

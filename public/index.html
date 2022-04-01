@@ -59,7 +59,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="edit-portfolio">
+                    <form id="edit-portfolio" class="needs-validation" novalidate>
                         <div class="form-row">
                             <div class="col-md-6 mb-3">
                                 <label for="names">First name</label>
@@ -68,6 +68,19 @@
                             <div class="col-md-6 mb-3">
                                 <label for="lastNames">Last name</label>
                                 <input type="text" class="form-control" id="lastNames" name="lastNames" required>
+                                <div class="valid-feedback">
+                                    Looks good!
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-md-6 mb-3">
+                                <label for="email">Email</label>
+                                <input type="text" class="form-control" id="email" name="email" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="twitterUserName">Twitter User name</label>
+                                <input type="text" class="form-control" id="twitterUserName" name="twitterUserName" placeholder="@MyTwitterUserName">
                             </div>
                         </div>
                         <div class="form-group">
@@ -83,7 +96,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button id="save-portfolio" type="button" class="btn btn-primary">Save</button>
+                    <button id="save-portfolio" type="submit" class="btn btn-primary">Save</button>
                 </div>
             </div>
         </div>

@@ -5,7 +5,6 @@
  * @cristhianDt
  */
 const twitterApi = require('../../common/twitterApi')
-const { InvalidRequestError, SystemError } = require('../common/customErrors')
 
 async function getLastTenTweets(twUserId) {
   return twitterApi.getUserTweets(twUserId, 10)

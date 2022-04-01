@@ -1,78 +1,72 @@
-const mongo = require('../config/database/mongo')
+const db = require('../repository/portfolioRepository')
+const { getUserByUserName: twUserByUserName } = require('../../common/twitterApi')
 const { InvalidRequestError, SystemError } = require('../common/customErrors')
-const fileServerHelper = require('../helpers/fileServerHelper')
-const {
-  getFeatureFlagValue,
-  features: { USE_MONGOOSE }
-} = require('../config/featureFlags')
-const shouldUseMongoose = getFeatureFlagValue(USE_MONGOOSE)
 
 const { DIR_TO_SAVE_FILES } = process.env
 
+const fileServerHelper = require('../helpers/fileServerHelper')
+const logger = require('../config/logger/logger')
+
 async function getPortfolios() {
   let results = []
-  if (mongo.getCollection?.models?.Portfolio) {
+  // if (dynamoDBEnabled) {
+  /*const command = new ListTablesCommand({})
+  results = await dynamoDB.send(command)*/
+  // } else {
+  /*if (mongo.getCollection?.models?.Portfolio) {
     results = mongo.getCollection.models.Portfolio.find({}).limit(100)
   } else {
     let cursor = await mongo.getCollection.Portfolio.find({}).limit(100)
     await cursor.forEach(portfolio => {
       results.push(portfolio)
     })
-  }
+  }*/
+  // }
   return results
 }
 
-async function getByUserId(userId) {
+/**
+ * Using https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/modules/_aws_sdk_lib_dynamodb.html
+ * to get a item
+ *
+ * @param portfolioId
+ * @returns {Promise<*>}
+ */
+async function getById(portfolioId) {
   let portfolio = {}
-  if (mongo.getCollection?.models?.Portfolio) {
-    portfolio = mongo.getCollection.models.Portfolio.findOne({ userId })
-  } else {
-    portfolio = await mongo.getCollection.Portfolio.findOne({ userId })
-  }
+  portfolio = await db.getPortfolioById(portfolioId)
   return portfolio
 }
 
-async function updatePortfolio(portfolioId, body) {
-  let portfolio, imageUrl
-  const { files: { imageUrl: file = null }, names, experienceSummary, lastNames } = body
-  if (mongo.getCollection?.models?.Portfolio) {
-    portfolio = await mongo.getCollection.models.Portfolio.findOne({ _id: mongo.ObjectId(portfolioId) })
-  } else {
-    portfolio = await mongo.getCollection.Portfolio.findOne({ _id: mongo.ObjectId(portfolioId) })
-  }
-  if (!portfolio) {
-    throw new InvalidRequestError(`Portfolio not found ${portfolioId}`)
-  }
+async function upSertPortfolio(portfolioId, body) {
+  let portfolio = await db.getPortfolioById(portfolioId), imageUrl
+  const { files: { imageUrl: file = null }, names, email, experienceSummary, lastNames, twitterUserName } = body
   if (file) {
     const { fileName, ext } = isValidateImageFile(file)
     const wasSaved = await fileServerHelper.saveFileInServer(portfolioId, file, fileName, ext)
     if (typeof wasSaved !== 'undefined') {
       throw new SystemError(`Error saving file : ${wasSaved.message}`)
     }
-    if (portfolio.imageUrl) {
+    if (portfolio?.imageUrl) {
       await fileServerHelper.deleteFileInServer(portfolio.imageUrl)
     }
     imageUrl = `${DIR_TO_SAVE_FILES}/${portfolioId}/${fileName}.${ext}`
   }
+  let twitterUserId, twitterUser
+  if (twitterUserName && twitterUserName !== portfolio?.twitterUserName) {
+    logger.info(`twitterUserName: ${twitterUserName}`);
+    ({ data: { id: twitterUserId, name: twitterUser } } = await twUserByUserName(twitterUserName))
+  }
   const update = {
+    email,
     names,
     experienceSummary,
     lastNames,
-    // twitterUserId: "1508655642709483524",
-    // twitterUser: "C. David",
-    // twitterUserName: "CDavid93327931",
+    ...(twitterUserId && { userId: twitterUserId, twitterUserId, twitterUser, twitterUserName }),
     ...(imageUrl && { imageUrl })
   }
-  if (shouldUseMongoose) {
-    // if mongoose is enabled
-    return mongo.getCollection.models.Portfolio.findOneAndUpdate({ _id: portfolio._id }, update, {
-      returnOriginal: false,
-    })
-  } else {
-    // if mongoose is disabled
-    const result = await mongo.getCollection.Portfolio.updateOne({ _id: portfolio._id }, { $set: update })
-    return result.modifiedCount ? update : {}
-  }
+  const result = await db.client.upSertPortfolio(portfolioId, update)
+  return result === 200 ? { ...(portfolio || {}), ...update } : result
 }
 
 function isValidateImageFile(file) {
@@ -88,7 +82,6 @@ function isValidateImageFile(file) {
 }
 
 module.exports = {
-  getPortfolios,
-  getByUserId,
-  updatePortfolio,
+  getById,
+  updatePortfolio: upSertPortfolio,
 }
