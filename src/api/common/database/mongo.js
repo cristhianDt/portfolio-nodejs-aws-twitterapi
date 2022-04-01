@@ -1,6 +1,13 @@
+/*
+ * Copyright (c) 2022.
+ *
+ * File wrote it by Cristhian Torres
+ * @cristhianDt
+ */
+
 const { MongoClient, ObjectId } = require('mongodb')
 const mongoose = require('mongoose')
-const logger = require('../logger/logger')
+const logger = require('../../config/logger/logger')
 const {
   MONGODB_CLUSTER_URL,
   MONGODB_DATABASE_NAME,
@@ -10,9 +17,9 @@ const {
 const {
   getFeatureFlagValue,
   features: { USE_MONGOOSE }
-} = require('../featureFlags')
+} = require('../../config/featureFlags')
 const shouldUseMongoose = getFeatureFlagValue(USE_MONGOOSE)
-const schemas = require('../../common/getSchemas')
+const schemas = require('../getSchemas')
 
 const uri = `mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGODB_CLUSTER_URL}/${MONGODB_DATABASE_NAME}?retryWrites=true&writeConcern=majority`
 logger.info(`Mongodb uri: ${uri} using mongoose: ${shouldUseMongoose}`)
@@ -43,7 +50,7 @@ exports.init = () => {
       }
       const msg = 'Connected successfully to mongo database'
       logger.info(msg)
-      console.log(msg)
+      console.log(msg, JSON.stringify(Object.keys(db)))
       resolve(shouldUseMongoose ? client : db)
       exports.getCollection = shouldUseMongoose ? client : db
     } catch (err) {

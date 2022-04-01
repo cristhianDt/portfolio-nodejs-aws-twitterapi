@@ -11,7 +11,7 @@ const PortfolioSchema = new Schema({
   lastNames: String,
   names: String,
   userId: {
-    type: String,
+    type: Number,
     index: true,
     unique: true,
     required: true

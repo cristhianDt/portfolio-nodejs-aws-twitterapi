@@ -14,6 +14,18 @@ router.get('/', async (req, res) => {
   }
 })
 
+router.get('/:portfolioId', async (req, res) => {
+  try {
+    const {
+      params: { portfolioId }
+    } = req
+    const portfolio = await portfolioController.getById(parseInt(portfolioId))
+    res.status(200).send({ portfolio })
+  } catch (e) {
+    errorHandler(res, e)
+  }
+})
+
 router.post('/:id', parseFilesMiddleware, async (req, res) => {
   try {
     const {
@@ -22,18 +34,6 @@ router.post('/:id', parseFilesMiddleware, async (req, res) => {
     } = req
     const updatedPortfolio = await portfolioController.updatePortfolio(id, body)
     res.status(200).send({ portfolio: updatedPortfolio })
-  } catch (e) {
-    errorHandler(res, e)
-  }
-})
-
-router.get('/user/:userId', async (req, res) => {
-  try {
-    const {
-      params: { userId }
-    } = req
-    const portfolio = await portfolioController.getByUserId(userId)
-    res.status(200).send({ portfolio })
   } catch (e) {
     errorHandler(res, e)
   }

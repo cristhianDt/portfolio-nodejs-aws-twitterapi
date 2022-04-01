@@ -8,7 +8,6 @@
  */
 
 let portfolio
-const DEFAULT_USER_ID = 1
 const API_DOMAIN = '/api/v1'
 
 const defaultPortfolio = {
@@ -21,7 +20,7 @@ const defaultPortfolio = {
 }
 
 const setInformation = (info) => {
-  portfolio = info?.portfolio?.id ? info.portfolio : defaultPortfolio
+  portfolio = info?.portfolio?.id ? info.portfolio : { ...defaultPortfolio }
   let userImageElement = $('#user-image')
   let userFullNameElement = $('#user-full-name')
   let userExpSummaryElement = $('#user-experience')
@@ -38,7 +37,7 @@ const setInformation = (info) => {
 
 const getPortfolio = () => {
   $.ajax({
-    url: `${API_DOMAIN}/portfolios/user/${portfolio.userId ?? DEFAULT_USER_ID}`,
+    url: `${API_DOMAIN}/portfolios/${portfolio.id}`,
     type: 'get',
     error: function (jqXHR, textStatus, errorThrown) {
       console.log('Error getting audio: Status ' + jqXHR + ':' + textStatus)
@@ -46,7 +45,6 @@ const getPortfolio = () => {
     success: function (response, extStatus, jqXHR) {
       setInformation(response ?? undefined)
       getTweets(response?.portfolio)
-      // container.src = `data:audio/webm;codecs=opus;base64,${response.data}`;
     }
   })
 }
