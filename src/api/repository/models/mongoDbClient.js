@@ -6,6 +6,8 @@
  */
 const DbInterface = require('./databaseInterface')
 const mongo = require('../../common/database/mongo')
+const mongodbUtils = require('../../../utils/mongodb')
+const { ObjectId } = require('mongodb')
 
 // should implement the DbInterface methods
 class mongoDbClient extends DbInterface {
@@ -16,6 +18,9 @@ class mongoDbClient extends DbInterface {
 
   async getPortfolioById(portfolioId) {
     let portfolio
+    if (!mongodbUtils.isValidObjectId(portfolioId)) {
+      return this.getByUserId(portfolioId)
+    }
     if (this.useMongoose) {
       portfolio = await mongo.getCollection.models.Portfolio.findOne({ _id: mongo.ObjectId(portfolioId) })
     } else {
@@ -27,7 +32,7 @@ class mongoDbClient extends DbInterface {
   async getPortfolios() {
     let results = []
     if (this.useMongoose) {
-      results = mongo.getCollection.models.Portfolio.find({}).limit(100)
+      results = await mongo.getCollection.models.Portfolio.find({}).limit(100)
     } else {
       let cursor = await mongo.getCollection.Portfolio.find({}).limit(100)
       await cursor.forEach(portfolio => {
@@ -37,23 +42,29 @@ class mongoDbClient extends DbInterface {
     return results
   }
 
-  async updatePortfolio(update) {
+  async upSertPortfolio(id, update) {
     if (this.useMongoose) {
       // if mongoose is enabled
-      return mongo.getCollection.models.Portfolio.findOneAndUpdate({ _id: portfolio._id }, update, {
+      const result = await mongo.getCollection.models.Portfolio.findOneAndUpdate({ ...(!mongodbUtils.isValidObjectId(id) && { userId: id } || { _id: new ObjectId(id) }) }, update, {
+        new: true,
+        upsert: true,
+        rawResult: true, // Return the raw result from the MongoDB driver
         returnOriginal: false,
       })
+      return result?.ok && result.value
     } else {
       // if mongoose is disabled
-      const result = await mongo.getCollection.Portfolio.updateOne({ _id: portfolio._id }, { $set: update })
-      return result.modifiedCount
+      console.log({ ...(!mongodbUtils.isValidObjectId(id) && { userId: id } || { _id: new ObjectId(id) }) })
+      const options = { upsert: true }
+      const result = await mongo.getCollection.Portfolio.updateOne({ ...(!mongodbUtils.isValidObjectId(id) && { userId: id } || { _id: new ObjectId(id) }) }, { $set: update }, options)
+      return result.modifiedCount && 200
     }
   }
 
   async getByUserId(userId) {
     let portfolio = {}
     if (this.useMongoose) {
-      portfolio = mongo.getCollection.models.Portfolio.findOne({ userId })
+      portfolio = await mongo.getCollection.models.Portfolio.findOne({ userId })
     } else {
       portfolio = await mongo.getCollection.Portfolio.findOne({ userId })
     }

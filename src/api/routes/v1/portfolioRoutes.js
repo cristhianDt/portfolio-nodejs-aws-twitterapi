@@ -5,21 +5,21 @@ const portfolioController = require('../../controllers/portfolioController')
 const { errorHandler } = require('../../config/middleware/general')
 const parseFilesMiddleware = require('../../config/middleware/parseFilesMiddleware')
 
-router.get('/', async (req, res) => {
+/*router.get('/', async (req, res) => {
   try {
     const portfolios = await portfolioController.getPortfolios()
     res.status(200).send(portfolios)
   } catch (e) {
     errorHandler(res, e)
   }
-})
+})*/
 
 router.get('/:portfolioId', async (req, res) => {
   try {
     const {
       params: { portfolioId }
     } = req
-    const portfolio = await portfolioController.getById(parseInt(portfolioId))
+    const portfolio = await portfolioController.getById(portfolioId)
     res.status(200).send({ portfolio })
   } catch (e) {
     errorHandler(res, e)

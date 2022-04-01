@@ -8,10 +8,10 @@
 class DbInterface {
   constructor() {
   }
-  getPortfolioById () { /* should return */ }
+  getPortfolioById (portfolioId) { /* should return */ }
   getPortfolios () { /*should return all the portfolios*/ }
-  getByUserId () { /* should return the first portfolio by user */ }
-  updatePortfolio () { /* should update portfolio */ }
+  getByUserId (userId) { /* should return the first portfolio by user */ }
+  upSertPortfolio (portfolioId, update) { /* should update portfolio */ }
 }
 
 module.exports = DbInterface

@@ -10,7 +10,7 @@
 let portfolio
 const API_DOMAIN = '/api/v1'
 
-const defaultPortfolio = {
+const defaultPortfolio = localStorage.getItem('portfolio') && JSON.parse(localStorage.getItem('portfolio')) || {
   id: 1,
   names: 'John',
   lastNames: 'Snow',
@@ -20,7 +20,7 @@ const defaultPortfolio = {
 }
 
 const setInformation = (info) => {
-  portfolio = info?.portfolio?.id ? info.portfolio : { ...defaultPortfolio }
+  portfolio = (info?.portfolio?.id || info?.portfolio?.portfolioId) ? info.portfolio : { ...defaultPortfolio }
   let userImageElement = $('#user-image')
   let userFullNameElement = $('#user-full-name')
   let userExpSummaryElement = $('#user-experience')
@@ -28,21 +28,25 @@ const setInformation = (info) => {
   userImageElement.attr('src', portfolio.imageUrl)
   userFullNameElement.text(`${portfolio.names} ${portfolio.lastNames}`)
   userTimelineTitleElement.text(`${portfolio.names}'s Timeline`)
-  userExpSummaryElement.text(portfolio.experienceSummary)
+  userExpSummaryElement.html(portfolio.experienceSummary.replaceAll('\r\n', '<br>'))
   /* edit form */
   $('input#names').val(portfolio.names)
+  $('input#email').val(portfolio.email)
   $('input#lastNames').val(portfolio.lastNames)
+  $('input#twitterUserName').val(portfolio.twitterUserName)
   $('textarea#experienceSummary').val(portfolio.experienceSummary)
+  localStorage.setItem('portfolio', JSON.stringify(portfolio))
 }
 
 const getPortfolio = () => {
   $.ajax({
-    url: `${API_DOMAIN}/portfolios/${portfolio.id}`,
+    url: `${API_DOMAIN}/portfolios/${(portfolio?._id ?? portfolio?.portfolioId ?? portfolio?.id)}`,
     type: 'get',
     error: function (jqXHR, textStatus, errorThrown) {
       console.log('Error getting audio: Status ' + jqXHR + ':' + textStatus)
     },
     success: function (response, extStatus, jqXHR) {
+      console.log(`Response: ${JSON.stringify(response)}`)
       setInformation(response ?? undefined)
       getTweets(response?.portfolio)
     }
@@ -50,20 +54,27 @@ const getPortfolio = () => {
 }
 
 const savePortfolio = () => {
-  if (!portfolio?.id && !portfolio?._id) {
+  if (!portfolio?.id && !portfolio?._id && !portfolio?.portfolioId) {
     alert('Error portfolio does not exist')
+    return
   }
   let formData = new FormData(),
     names = $('input#names').val(),
+    email = $('input#email').val(),
     lastNames = $('input#lastNames').val(),
+    twitterUserName = $('input#twitterUserName').val(),
     experienceSummary = $('textarea#experienceSummary').val(),
     file = $('#imageUrl').prop('files')[0]
-  formData.append('imageUrl', file)
+  if (file) {
+    formData.append('imageUrl', file)
+  }
+  formData.append('email', email)
   formData.append('names', names)
   formData.append('lastNames', lastNames)
+  formData.append('twitterUserName', twitterUserName)
   formData.append('experienceSummary', experienceSummary)
   $.ajax({
-    url: `${API_DOMAIN}/portfolios/${(portfolio?.id ?? portfolio?._id)}`,
+    url: `${API_DOMAIN}/portfolios/${(portfolio?._id ?? portfolio?.portfolioId ?? portfolio?.id)}`,
     type: 'POST',
     async: true,
     data: formData,
@@ -73,6 +84,7 @@ const savePortfolio = () => {
     timeout: 120000,
     success: function (updatedPortfolio) {
       $('#editPortfolioModal').modal('hide')
+      portfolio?.twitterUserName !== updatedPortfolio.portfolio?.twitterUserName && getTweets(updatedPortfolio.portfolio)
       setInformation({ portfolio: { ...portfolio, ...updatedPortfolio.portfolio } })
     },
     error: function (jqXHR) {

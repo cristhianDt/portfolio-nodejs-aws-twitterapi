@@ -22,7 +22,6 @@ const shouldUseMongoose = getFeatureFlagValue(USE_MONGOOSE)
 const schemas = require('../getSchemas')
 
 const uri = `mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGODB_CLUSTER_URL}/${MONGODB_DATABASE_NAME}?retryWrites=true&writeConcern=majority`
-logger.info(`Mongodb uri: ${uri} using mongoose: ${shouldUseMongoose}`)
 
 exports.init = () => {
   return new Promise(async (resolve, reject) => {
@@ -50,11 +49,11 @@ exports.init = () => {
       }
       const msg = 'Connected successfully to mongo database'
       logger.info(msg)
-      console.log(msg, JSON.stringify(Object.keys(db)))
       resolve(shouldUseMongoose ? client : db)
       exports.getCollection = shouldUseMongoose ? client : db
     } catch (err) {
-      logger.error('Error connecting to mongodb', err)
+      logger.info(`Mongodb uri: ${uri} using mongoose: ${shouldUseMongoose}`)
+      logger.error('Error connecting to mongodb:', err)
       await client.close()
       reject(err)
     }

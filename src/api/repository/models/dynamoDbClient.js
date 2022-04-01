@@ -4,16 +4,18 @@
  * File wrote it by Cristhian Torres
  * @cristhianDt
  */
-const { GetCommand } = require('@aws-sdk/lib-dynamodb')
+const { GetCommand, UpdateCommand } = require('@aws-sdk/lib-dynamodb')
 const { ListTablesCommand, GetItemCommand } = require('@aws-sdk/client-dynamodb')
 const dynamoDB = require('../../common/database/dynamoDB')
 
 const DbInterface = require('./databaseInterface')
+const logger = require('../../config/logger/logger')
 
 // should implement the DbInterface methods
 class dynamoDbClient extends DbInterface {
   constructor() {
     super()
+    this.TableName = 'Portfolio'
   }
 
   async getPortfolios() {
@@ -26,18 +28,18 @@ class dynamoDbClient extends DbInterface {
   /**
    * @link https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/javascript_dynamodb_code_examples.html
    * @param portfolioId
-   * @returns {Promise<Omit<GetItemCommandOutput, "Item"> & {Item?: {[p: string]: NativeAttributeValue}}>}
+   * @returns {Promise<Omit<GetCommand, "Item"> & {Item?: {[p: string]}}>}
    */
   async getPortfolioById(portfolioId) {
     let portfolio
     const params = {
-      TableName: 'Portfolio',
+      TableName: this.TableName,
       Key: {
-        portfolioId: portfolioId,
+        portfolioId: parseInt(portfolioId),
       },
     }
-    portfolio = dynamoDB.send(new GetCommand(params));
-    return portfolio
+    portfolio = await dynamoDB.send(new GetCommand(params))
+    return portfolio?.Item
   }
 
   async getByUserId(userId) {
@@ -45,27 +47,40 @@ class dynamoDbClient extends DbInterface {
     return portfolio
   }
 
-
-  createPutItemInput() {
-    return {
-      "TableName": "Portfolio",
-      "Item": {
-        "portfolioId": {
-          "N": "0"
-        }
-      }
+  generateUpdateQuery = (attributes) => {
+    let exp = {
+      UpdateExpression: 'set',
+      ExpressionAttributeNames: {},
+      ExpressionAttributeValues: {}
     }
+    Object.entries(attributes).forEach(([key, item]) => {
+      exp.UpdateExpression += ` #${key} = :${key},`;
+      exp.ExpressionAttributeNames[`#${key}`] = key;
+      exp.ExpressionAttributeValues[`:${key}`] = item
+    })
+    exp.UpdateExpression = exp.UpdateExpression.slice(0, -1);
+    return exp
   }
 
-  async updatePortfolio(update) {
-    /*const params = {
-      TableName: 'Portfolio',
+  /**
+   *
+   * @param portfolioId
+   * @param attributes
+   * @returns {Promise<Omit<UpdateCommand, "Attributes" | "ItemCollectionMetrics"> & {Attributes?: {[p: string]}; ItemCollectionMetrics?: Omit<ItemCollectionMetrics, "ItemCollectionKey"> & {ItemCollectionKey?: {[p: string]}}}>}
+   */
+  async upSertPortfolio(portfolioId, attributes) {
+    const params = {
+      TableName: this.TableName,
       Key: {
-        primaryKey: portfolioId,
+        portfolioId: portfolioId,
       },
+      ...this.generateUpdateQuery(attributes)
     }
-    const command = new GetItemCommand(params)
-    portfolio = await dynamoDB.send(command)*/
+    // logger.info(`dynamodb upsert item: ${JSON.stringify({ params, command: new UpdateCommand(params) })}`)
+    const result = await dynamoDB.send(
+      new UpdateCommand(params)
+    )
+    return result?.$metadata?.httpStatusCode
   }
 }
 

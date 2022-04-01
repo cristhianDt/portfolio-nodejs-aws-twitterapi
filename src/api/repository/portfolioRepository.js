@@ -20,7 +20,6 @@ class DbClient {
     this.useDynamoDb = useDynamoDb
     this.useMongoose = useMongoose
     this.#client = this.createClient()
-    logger.info(JSON.stringify(this.#client))
   }
 
   createClient() {
@@ -37,7 +36,7 @@ class DbClient {
   }
 
   getPortfolioById(id) {
-    if (!this.useDynamoDb) { return this.#client.getByUserId(id) } else { return this.#client.getPortfolioById(id)}
+    return this.#client.getPortfolioById(id)
   }
 }
 
