@@ -68,7 +68,6 @@ class mongoDbClient extends DbInterface {
     } else {
       portfolio = await mongo.getCollection.Portfolio.findOne({ userId })
     }
-    console.log('mongodb get by user: ', userId, portfolio)
     return portfolio
   }
 }

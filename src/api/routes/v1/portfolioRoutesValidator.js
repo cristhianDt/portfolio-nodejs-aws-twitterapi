@@ -19,17 +19,17 @@ const validateUpSerPortfolioParamsSchema = celebrate({
 })
 
 const upSertPortfolioSchema = Joi.object({
-  email: Joi.string().required(),
+  email: Joi.string().required().email(),
   names: Joi.string().required(),
   lastNames: Joi.string().required(),
-  files: {
-    imageUrl:
+  files: Joi.object({
+    imageUrl: Joi.object(
       {
         size: Joi.number(),
         filepath: Joi.string(),
         originalFilename: Joi.string()
-      }
-  },
+      }).unknown(true)
+  }).unknown(false),
   twitterUserName: Joi.string(),
   experienceSummary: Joi.string()
 }).unknown(false)
