@@ -1,7 +1,7 @@
 // noinspection JSUnresolvedFunction
 require('dotenv').config()
 
-const http = require('http')
+//const http = require('http')
 const express = require('express')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
@@ -13,7 +13,7 @@ const celebrateMiddleware = require('./api/config/middleware/celebrateMiddleware
 const { printBody } = require('./api/config/middleware/general')
 const { SystemError } = require('./api/common/customErrors')
 
-const port = parseInt(process.env.APP_PORT, 10) || 3000
+const port = parseInt(process.env.PORT, 10) || 3000
 const ENDPOINT = `${process.env.APP_DOMAIN}:${port}`
 const publicPath = path.join(__dirname, '../public')
 const {
@@ -32,7 +32,7 @@ const portfolios = require('./api/routes/v1/portfolioRoutes')
 const start = async () => {
   try {
     const app = express()
-    let server = http.createServer(app)
+    //let server = http.createServer(app)
 
     app.use(bodyParser.json())
     app.use(bodyParser.urlencoded({ extended: false }))
@@ -59,7 +59,7 @@ const start = async () => {
       })
     }
 
-    server.listen(port, (error) => {
+    app.listen(port, (error) => {
       if (error) throw error
       const msg = `Listening on ${ENDPOINT}`
       logger.info(msg)
@@ -79,4 +79,4 @@ const start = async () => {
   }
 }
 
-start()
+module.exports = start
