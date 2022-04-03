@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "zemoga test nodejs+aws+twitterapi",
   "main": "index.js",
+  "engines": {
+    "node": "14.x",
+    "npm": "7.x"
+  },
   "scripts": {
     "start": "node src/server.js",
     "test": "npm run test:unit:jest && npm run test:integ:jest",
