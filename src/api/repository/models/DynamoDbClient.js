@@ -11,6 +11,21 @@ const DynamoDB = require('../../common/database/DynamoDB')
 const DbInterface = require('./DbInterface')
 const logger = require('../../config/logger/logger')
 
+generateUpdateQuery = (attributes) => {
+  let exp = {
+    UpdateExpression: 'set',
+    ExpressionAttributeNames: {},
+    ExpressionAttributeValues: {}
+  }
+  Object.entries(attributes).forEach(([key, item]) => {
+    exp.UpdateExpression += ` #${key} = :${key},`;
+    exp.ExpressionAttributeNames[`#${key}`] = key;
+    exp.ExpressionAttributeValues[`:${key}`] = item
+  })
+  exp.UpdateExpression = exp.UpdateExpression.slice(0, -1);
+  return exp
+}
+
 // should implement the DbInterface methods
 class DynamoDbClient extends DbInterface {
   constructor(tableName) {
@@ -38,24 +53,12 @@ class DynamoDbClient extends DbInterface {
         portfolioId: parseInt(portfolioId),
       },
     }
-    console.log('params get portfolio by id ',params)
     portfolio = await DynamoDB.send(new GetCommand(params))
     return portfolio?.Item
   }
 
-  generateUpdateQuery = (attributes) => {
-    let exp = {
-      UpdateExpression: 'set',
-      ExpressionAttributeNames: {},
-      ExpressionAttributeValues: {}
-    }
-    Object.entries(attributes).forEach(([key, item]) => {
-      exp.UpdateExpression += ` #${key} = :${key},`;
-      exp.ExpressionAttributeNames[`#${key}`] = key;
-      exp.ExpressionAttributeValues[`:${key}`] = item
-    })
-    exp.UpdateExpression = exp.UpdateExpression.slice(0, -1);
-    return exp
+  getGenerateUpdateQuery = (attributes) => {
+    return generateUpdateQuery(attributes)
   }
 
   /**
@@ -70,9 +73,9 @@ class DynamoDbClient extends DbInterface {
       Key: {
         portfolioId: parseInt(portfolioId),
       },
-      ...this.generateUpdateQuery(attributes)
+      ...this.getGenerateUpdateQuery(attributes)
     }
-    logger.info(`dynamodb upsert item: ${JSON.stringify({ params, command: new UpdateCommand(params) })}`)
+    logger.info(`dynamodb upsert item: ${JSON.stringify({ params })}`)
     const result = await DynamoDB.send(
       new UpdateCommand(params)
     )
@@ -80,4 +83,4 @@ class DynamoDbClient extends DbInterface {
   }
 }
 
-module.exports = DynamoDbClient
+module.exports = { DynamoDbClient, generateUpdateQuery }

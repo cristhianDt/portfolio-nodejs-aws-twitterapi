@@ -1,6 +1,6 @@
 const logger = require('../config/logger/logger')
 const MongoDbClient = require('./models/MongoDbClient')
-const DynamoDbClient = require('./models/DynamoDbClient')
+const { DynamoDbClient } = require('./models/DynamoDbClient')
 const DbInterface = require('./models/DbInterface')
 
 const {
@@ -32,10 +32,6 @@ class DbClient extends DbInterface {
     } else {
       return new MongoDbClient(this.useMongoose)
     }
-  }
-
-  get client() {
-    return this.#client
   }
 
   getPortfolioById(id) {

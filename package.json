@@ -5,10 +5,11 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/server.js",
-    "test": "npm run test:unit:jest:report",
+    "test": "npm run test:unit:jest && npm run test:integ:jest",
     "dev": "nodemon src/server.js",
     "test:unit:jest": "jest --testMatch='**/*.unit.jest.js'",
-    "test:unit:jest:report": "jest --testMatch='**/*.unit.jest.js' --coverage"
+    "test:unit:jest:report": "jest --testMatch='**/*.unit.jest.js' --coverage",
+    "test:integ:jest": "jest --testMatch='**/*.integ.jest.js'"
   },
   "repository": {
     "type": "git",
