@@ -1,15 +1,11 @@
 # PORTFOLIO NodeJS WEB APP
 
-Readme file with Detailed steps to get the application up and running: software prerequisites, steps to build the app, technologies used,
-etc, as well as the total time (in hours) it took you to complete the test
-
-This project use git flow. If you are using linux OS just run `sudo apt-get install git-flow`. [Read about git-flow](https://www.atlassian.com/es/git/tutorials/comparing-workflows/gitflow-workflow).
-
 ## Description
 
 Build a simple portfolio NodeJS based web app that displays the profile image, name, some text with the experience, and the last 10 tweet list of the user's Twitter timeline.
 
-The project works with mongodb / mongoose / dynamodb (process...)
+The project could work with mongodb / mongoose / dynamodb, by default works with dynamodb, **IMPORTANT** _Unit and Integration tests works only with dynamoDb. Also,
+it uses git flow to handle the branches in the repository_. If you are using linux OS just run `sudo apt-get install git-flow`. [Read about git-flow](https://www.atlassian.com/es/git/tutorials/comparing-workflows/gitflow-workflow).
 
 ## Relevant Information
 
@@ -31,6 +27,41 @@ You can edit just one element (id/portfolioId = 1), insert new item is not allow
    2. By [NoSql Workbench](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/workbench.settingup.html)
    3. By `console.aws.amazon.com`
    4. Running `npm run tasks:dumpPortfolio` (only works with dynamodb)
+
+## Technologies used
+
+- Atlas
+- Aws-Service
+- Aws-DynamoDb
+- Docker
+- Docker-compose
+- GitKraken
+- Mongodb
+- Jest
+- Joi & Celebrate
+- Postman
+- Twitter-Api
+- WebStorm
+
+Others libraries:
+```
+├── @aws-sdk/client-dynamodb@3.58.0
+├── @aws-sdk/lib-dynamodb@3.58.0
+├── axios@0.26.1
+├── body-parser@1.19.2
+├── celebrate@15.0.1
+├── cookie-parser@1.4.6
+├── cors@2.8.5
+├── dotenv@16.0.0
+├── express@4.17.3
+├── formidable@2.0.1
+├── jest@27.5.1
+├── lodash@4.17.21
+├── mongodb@4.4.1
+├── mongoose@6.2.8
+├── nodemon@2.0.15
+└── winston@3.6.0
+```
 
 ## Dev Info
 
