@@ -25,7 +25,7 @@ const setInformation = (info) => {
   let userFullNameElement = $('#user-full-name')
   let userExpSummaryElement = $('#user-experience')
   let userTimelineTitleElement = $('#user-timeline-title')
-  userImageElement.attr('src', portfolio?.imageUrl)
+  portfolio?.imageUrl && userImageElement.attr('src', portfolio.imageUrl ?? defaultPortfolio.imageUrl)
   userFullNameElement.text(`${portfolio.names} ${portfolio.lastNames}`)
   userTimelineTitleElement.text(`${portfolio.names}'s Timeline`)
   userExpSummaryElement.html(portfolio?.experienceSummary.replaceAll('\r\n', '<br>') ?? '')
