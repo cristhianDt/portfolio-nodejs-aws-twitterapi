@@ -11,3 +11,5 @@ logs/
 public/assets/images/portfolios/
 
 docker/
+
+coverage/

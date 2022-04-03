@@ -13,7 +13,7 @@ The project works with mongodb / mongoose / dynamodb (process...)
 
 ## Relevant Information
 
-(process...)
+You can edit just one element (id/portfolioId = 1), insert new item is not allowed.
 
 ## First Steps
 
@@ -40,3 +40,7 @@ Libraries version
 - npm: @7.24.2
 - node: @14.19.1
 ```
+
+### Testing
+
+If you wish to run the unit and integration tests, you DynamoDb must be enabled, add `USE_DYNAMODB_FEATURE_FLAG=enabled` in your `.env` file

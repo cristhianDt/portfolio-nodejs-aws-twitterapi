@@ -1,4 +1,4 @@
-const db = require('../repository/portfolioRepository')
+const DbClient = require('../repository/DbClient')
 const { getUserByUserName: twUserByUserName } = require('../../common/twitterApi')
 const { InvalidRequestError, SystemError } = require('../common/customErrors')
 
@@ -7,22 +7,13 @@ const { DIR_TO_SAVE_FILES } = process.env
 const fileServerHelper = require('../helpers/fileServerHelper')
 const logger = require('../config/logger/logger')
 
-async function getPortfolios() {
-  let results = []
-  // if (dynamoDBEnabled) {
-  /*const command = new ListTablesCommand({})
-  results = await dynamoDB.send(command)*/
-  // } else {
-  /*if (mongo.getCollection?.models?.Portfolio) {
-    results = mongo.getCollection.models.Portfolio.find({}).limit(100)
-  } else {
-    let cursor = await mongo.getCollection.Portfolio.find({}).limit(100)
-    await cursor.forEach(portfolio => {
-      results.push(portfolio)
-    })
-  }*/
-  // }
-  return results
+let db = new DbClient()
+
+/**
+ * just for testing
+ */
+function changeDefaultTableName (tableName) {
+  db = new DbClient(tableName)
 }
 
 /**
@@ -40,7 +31,7 @@ async function getById(portfolioId) {
 
 async function upSertPortfolio(portfolioId, body) {
   let portfolio = await db.getPortfolioById(portfolioId), imageUrl
-  const { files: { imageUrl: file = null }, names, email, experienceSummary, lastNames, twitterUserName } = body
+  const { files: { imageUrl: file = null } = {}, names, email, experienceSummary, lastNames, twitterUserName } = body
   if (file) {
     const { fileName, ext } = isValidateImageFile(file)
     const wasSaved = await fileServerHelper.saveFileInServer(portfolioId, file, fileName, ext)
@@ -62,10 +53,11 @@ async function upSertPortfolio(portfolioId, body) {
     names,
     experienceSummary,
     lastNames,
-    ...(twitterUserId && { userId: twitterUserId, twitterUserId, twitterUser, twitterUserName }),
-    ...(imageUrl && { imageUrl })
+    ...(imageUrl && { imageUrl }),
+    ...(twitterUserId && { twitterUserId, twitterUser, twitterUserName }),
+    ...((!portfolio || (portfolio && !portfolio?.userId)) && twitterUserId && { userId: twitterUserId, }),
   }
-  const result = await db.client.upSertPortfolio(portfolioId, update)
+  const result = await db.upSertPortfolio(portfolioId, update)
   return result === 200 ? { ...(portfolio || {}), ...update } : result
 }
 
@@ -83,5 +75,6 @@ function isValidateImageFile(file) {
 
 module.exports = {
   getById,
+  changeDefaultTableName,
   updatePortfolio: upSertPortfolio,
 }
