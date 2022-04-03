@@ -1,3 +1,5 @@
+// noinspection JSCheckFunctionSignatures
+
 /*
  * Copyright (c) 2022.
  *
@@ -12,9 +14,9 @@ const { DynamoDBDocumentClient } = require('@aws-sdk/lib-dynamodb')
 const logger = require('../../config/logger/logger')
 
 const {
-  DYNAMODB_AWS_ACCESS_KEY_ID: accessKeyId,
-  DYNAMODB_AWS_SECRET_ACCESS_KEY: secretAccessKey,
-  DYNAMODB_AWS_REGION: region,
+  AWS_ACCESS_KEY_ID: accessKeyId,
+  AWS_SECRET_ACCESS_KEY: secretAccessKey,
+  AWS_REGION: region,
 } = process.env
 
 /**
@@ -40,7 +42,7 @@ logger.info(`DynamoDB useAccessKeyAndSecret: ${useAccessKeyAndSecret}`)
  * @link https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-dynamodb/classes/dynamodbclient.html
  * @type {DynamoDBClient|DynamoDBClient}
  */
-let ddbClient = useAccessKeyAndSecret ? new DynamoDBClient({ accessKeyId, secretAccessKey, region }) : new DynamoDBClient(DEFAULT_LOCAL_CONNECTION)
+let ddbClient = useAccessKeyAndSecret ? new DynamoDBClient({ region }) : new DynamoDBClient(DEFAULT_LOCAL_CONNECTION)
 
 const marshallOptions = {
   // Whether to automatically convert empty strings, blobs, and sets to `null`.
