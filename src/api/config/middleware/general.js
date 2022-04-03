@@ -1,35 +1,34 @@
-const { logger } = require('../logger/logger')
+const isEmpty = require('lodash/isEmpty')
+const logger = require('../logger/logger')
 
 exports.printBody = (req, res, next) => {
-  let body = null;
-  if (req.hasOwnProperty('body')) {
-    body = JSON.parse(JSON.stringify(req.body));
-  }
-  res.on("finish", function () {
-    let req = this.req;
-    let remote ='';
-    if (req.socket.localAddress &&  req.socket.localAddress){
-      remote = req.socket.localAddress;
+  const { method, path, query, body } = req
+  logger.info(`Req ${method} ${path}`, {
+    request: {
+      path,
+      method,
+      ...(!isEmpty(body) && { body }),
+      ...(!isEmpty(query) && { query })
     }
-    let user = req.user ? req.user.email: null;
-    if( !user){
-      if( req.headers.hasOwnProperty('authorization'))
-        user = req.headers.authorization;
-    }
-    if ("GET" === req.method) {
-      logger.info(req.method, user, "[", remote.replace(/^.*:/, ''), "] ->", req.originalUrl, JSON.stringify(req.query), ">", this.statusCode);
-    } else {
-      logger.info(req.method, user, "[", remote.replace(/^.*:/, ''), "] ->", req.originalUrl, JSON.stringify(body), ">",this.statusCode);
-    }
-  });
+  })
+  res.on('finish', function () {
+    let {  statusCode, req: { method, query, body, originalUrl } } = this
+    logger.info(`Res to ${method}`, {
+      request: {
+        originalUrl,
+        method,
+        statusCode,
+      }
+    })
+  })
   next()
 }
 
-exports.errorHandler = (error, req, res, next) => {
+exports.errorHandler = (res, error) => {
   const errorObj = {
     type: error.name,
     message: error.message,
-    status: error.status ? error.status : 500,
+    status: error?.status ?? 500,
     context: error.context,
   }
 
@@ -43,5 +42,5 @@ exports.errorHandler = (error, req, res, next) => {
 }
 
 exports.handleResponse = (req, res, next) => {
-  res.status(res.locals.result.status).json({status: "OK", data: res.locals.result.body});
+  res.status(res.locals.result.status).json({ status: 'OK', data: res.locals.result.body })
 }

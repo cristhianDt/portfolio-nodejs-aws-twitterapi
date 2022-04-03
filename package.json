@@ -5,8 +5,11 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon src/server.js"
+    "test": "npm run test:unit:jest && npm run test:integ:jest",
+    "dev": "nodemon src/server.js",
+    "test:unit:jest": "jest --testMatch='**/*.unit.jest.js'",
+    "test:unit:jest:report": "jest --testMatch='**/*.unit.jest.js' --coverage",
+    "test:integ:jest": "jest --testMatch='**/*.integ.jest.js'"
   },
   "repository": {
     "type": "git",
@@ -26,13 +29,23 @@
   },
   "homepage": "https://github.com/cristhianDt/portfolio-nodejs-aws-twitterapi#readme",
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.58.0",
+    "@aws-sdk/lib-dynamodb": "^3.58.0",
+    "axios": "^0.26.1",
     "body-parser": "^1.19.2",
     "celebrate": "^15.0.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
+    "formidable": "^2.0.1",
+    "lodash": "^4.17.21",
+    "mongodb": "^4.4.1",
+    "mongoose": "^6.2.8",
     "nodemon": "^2.0.15",
     "winston": "^3.6.0"
+  },
+  "devDependencies": {
+    "jest": "^27.5.1"
   }
 }
