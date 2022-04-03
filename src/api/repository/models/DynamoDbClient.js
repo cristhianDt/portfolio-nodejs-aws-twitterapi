@@ -6,22 +6,22 @@
  */
 const { GetCommand, UpdateCommand } = require('@aws-sdk/lib-dynamodb')
 const { ListTablesCommand, GetItemCommand } = require('@aws-sdk/client-dynamodb')
-const dynamoDB = require('../../common/database/dynamoDB')
+const DynamoDB = require('../../common/database/DynamoDB')
 
-const DbInterface = require('./databaseInterface')
+const DbInterface = require('./DbInterface')
 const logger = require('../../config/logger/logger')
 
 // should implement the DbInterface methods
-class dynamoDbClient extends DbInterface {
-  constructor() {
+class DynamoDbClient extends DbInterface {
+  constructor(tableName) {
     super()
-    this.TableName = 'Portfolio'
+    this.TableName = tableName ?? 'Portfolio'
   }
 
   async getPortfolios() {
     let results = []
     const command = new ListTablesCommand({})
-    results = await dynamoDB.send(command)
+    results = await DynamoDB.send(command)
     return results
   }
 
@@ -38,13 +38,9 @@ class dynamoDbClient extends DbInterface {
         portfolioId: parseInt(portfolioId),
       },
     }
-    portfolio = await dynamoDB.send(new GetCommand(params))
+    console.log('params get portfolio by id ',params)
+    portfolio = await DynamoDB.send(new GetCommand(params))
     return portfolio?.Item
-  }
-
-  async getByUserId(userId) {
-    let portfolio = {}
-    return portfolio
   }
 
   generateUpdateQuery = (attributes) => {
@@ -72,16 +68,16 @@ class dynamoDbClient extends DbInterface {
     const params = {
       TableName: this.TableName,
       Key: {
-        portfolioId: portfolioId,
+        portfolioId: parseInt(portfolioId),
       },
       ...this.generateUpdateQuery(attributes)
     }
-    // logger.info(`dynamodb upsert item: ${JSON.stringify({ params, command: new UpdateCommand(params) })}`)
-    const result = await dynamoDB.send(
+    logger.info(`dynamodb upsert item: ${JSON.stringify({ params, command: new UpdateCommand(params) })}`)
+    const result = await DynamoDB.send(
       new UpdateCommand(params)
     )
     return result?.$metadata?.httpStatusCode
   }
 }
 
-module.exports = dynamoDbClient
+module.exports = DynamoDbClient

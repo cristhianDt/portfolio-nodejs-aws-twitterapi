@@ -71,8 +71,12 @@ const savePortfolio = () => {
   formData.append('email', email)
   formData.append('names', names)
   formData.append('lastNames', lastNames)
-  formData.append('twitterUserName', twitterUserName)
-  formData.append('experienceSummary', experienceSummary)
+  if (twitterUserName && '' !== twitterUserName) {
+    formData.append('twitterUserName', twitterUserName)
+  }
+  if (experienceSummary && '' !== experienceSummary) {
+    formData.append('experienceSummary', experienceSummary)
+  }
   $.ajax({
     url: `${API_DOMAIN}/portfolios/${(portfolio?._id ?? portfolio?.portfolioId ?? portfolio?.id)}`,
     type: 'POST',

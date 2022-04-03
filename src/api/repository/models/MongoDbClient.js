@@ -4,13 +4,13 @@
  * File wrote it by Cristhian Torres
  * @cristhianDt
  */
-const DbInterface = require('./databaseInterface')
+const DbInterface = require('./DbInterface')
 const mongo = require('../../common/database/mongo')
 const mongodbUtils = require('../../../utils/mongodb')
 const { ObjectId } = require('mongodb')
 
 // should implement the DbInterface methods
-class mongoDbClient extends DbInterface {
+class MongoDbClient extends DbInterface {
   constructor(shouldUseMongoose) {
     super()
     this.useMongoose = shouldUseMongoose
@@ -72,4 +72,4 @@ class mongoDbClient extends DbInterface {
   }
 }
 
-module.exports = mongoDbClient
+module.exports = MongoDbClient

@@ -30,8 +30,8 @@ const upSertPortfolioSchema = Joi.object({
         originalFilename: Joi.string()
       }).unknown(true)
   }).unknown(false),
-  twitterUserName: Joi.string(),
-  experienceSummary: Joi.string()
+  twitterUserName: Joi.string().empty(''),
+  experienceSummary: Joi.string().empty('')
 }).unknown(false)
 
 const validateUpSertPortfolioRequestSchema = celebrate({ body: upSertPortfolioSchema })
