@@ -34,14 +34,6 @@ const createTestTableParams = {
   },
 }
 
-const createPortfolioItemParams = {
-  TableName: TABLE_NAME,
-  Item: {
-    names: { S: 'Portfolio Test' },
-    portfolioId: { N: DEFAULT_PORTFOLIO_ID },
-  },
-}
-
 jest.mock('../repository/DbClient')
 
 describe('portfolioController', () => {

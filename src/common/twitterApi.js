@@ -7,7 +7,7 @@
 const axios = require('axios')
 const { SystemError, InvalidRequestError } = require('../api/common/customErrors')
 
-const MAX_RESULTS = 10
+const MAX_RESULTS = 5
 const { TWITTER_BEARER_TOKEN } = process.env
 
 const DEFAULT_USER_FIELDS_TO_GET = ['created_at','description','entities','id','location','name','pinned_tweet_id','profile_image_url','protected','public_metrics','url','username','verified','withheld']

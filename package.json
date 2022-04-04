@@ -9,8 +9,9 @@
   },
   "scripts": {
     "start": "node app.js",
-    "test": "npm run test:unit:jest && npm run test:integ:jest",
     "dev": "nodemon app.js",
+    "test": "npm run test:unit:jest && npm run test:integ:jest",
+    "tasks:dumpPortfolio": "node ./src/tasks/dumpPortfolio.js",
     "test:unit:jest": "jest --testMatch='**/*.unit.jest.js'",
     "test:unit:jest:report": "jest --testMatch='**/*.unit.jest.js' --coverage",
     "test:integ:jest": "jest --testMatch='**/*.integ.jest.js'"

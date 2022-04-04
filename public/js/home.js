@@ -10,7 +10,7 @@
 let portfolio
 const API_DOMAIN = '/api/v1'
 
-const defaultPortfolio = localStorage.getItem('portfolio') && JSON.parse(localStorage.getItem('portfolio')) || {
+const defaultPortfolio = /*localStorage.getItem('portfolio') && JSON.parse(localStorage.getItem('portfolio')) || */{
   id: 1,
   names: 'John',
   lastNames: 'Snow',
