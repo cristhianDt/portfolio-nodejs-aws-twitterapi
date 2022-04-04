@@ -6,10 +6,16 @@
  */
 const twitterApi = require('../../common/twitterApi')
 
-async function getLastTenTweets(twUserId) {
-  return twitterApi.getUserTweets(twUserId, 10)
+/**
+ *
+ * @param twUserId
+ * @param count
+ * @returns {Promise<*|undefined>}
+ */
+async function getLastNUserTweets(twUserId, count = 5) {
+  return twitterApi.getUserTweets(twUserId, count)
 }
 
 module.exports = {
-  getLastTenTweets
+  getLastNUserTweets
 }
