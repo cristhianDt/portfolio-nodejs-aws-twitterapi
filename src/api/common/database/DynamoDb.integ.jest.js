@@ -37,14 +37,6 @@ const createTestTableParams = {
   },
 }
 
-const createPortfolioItemParams = {
-  TableName: TABLE_NAME,
-  Item: {
-    names: { S: 'Portfolio Test' },
-    portfolioId: { N: DEFAULT_PORTFOLIO_ID },
-  },
-}
-
 describe('portfolioController', () => {
 
   beforeAll(async () => {

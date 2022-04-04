@@ -4,8 +4,11 @@
 
 Build a simple portfolio NodeJS based web app that displays the profile image, name, some text with the experience, and the last 10 tweet list of the user's Twitter timeline.
 
-The project could work with mongodb / mongoose / dynamodb, by default works with dynamodb, **IMPORTANT** _Unit and Integration tests works only with dynamoDb. Also,
-it uses git flow to handle the branches in the repository_. If you are using linux OS just run `sudo apt-get install git-flow`. [Read about git-flow](https://www.atlassian.com/es/git/tutorials/comparing-workflows/gitflow-workflow).
+The project could work with mongodb / mongoose / dynamodb, by default works with dynamodb you can try in [heroku - Zemoga Test](https://current-job-offer.herokuapp.com/), **IMPORTANT** _Unit and Integration tests works only with dynamoDb. The project uses `git flow` as Git workflow_. If you are using linux OS just run `sudo apt-get install git-flow`. [Read about git-flow](https://www.atlassian.com/es/git/tutorials/comparing-workflows/gitflow-workflow).
+
+> **Note**
+>
+> The UI use fs to write the portfolio image **in local**, I'm working in integrate S3 as storage service.
 
 ## Relevant Information
 
