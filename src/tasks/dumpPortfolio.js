@@ -12,7 +12,7 @@ const { CreateTableCommand, DeleteTableCommand } = require('@aws-sdk/client-dyna
 const { UpdateCommand, GetCommand } = require('@aws-sdk/lib-dynamodb')
 const { DEFAULT_TABLE_NAME } = process.env
 
-const TABLE_NAME = DEFAULT_TABLE_NAME ?? 'Portfolio-2'
+const TABLE_NAME = DEFAULT_TABLE_NAME ?? 'Portfolio'
 const DEFAULT_PORTFOLIO_ID = 1
 
 const createPortfolioParams = {
