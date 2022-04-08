@@ -9,6 +9,15 @@ const parseFilesMiddleware = require('../../config/middleware/parseFilesMiddlewa
 const {
   validateUpSertPortfolioRequestSchema
 } = require('./portfolioRoutesValidator')
+const {
+  AWS_REGION,
+  AWS_S3_PUBLIC_BUCKET,
+  AWS_ACCESS_KEY_ID: accessKeyId,
+  AWS_SECRET_ACCESS_KEY: secretAccessKey
+} = process.env
+
+const useS3Client = Boolean(accessKeyId) && Boolean(secretAccessKey)
+bucket = useS3Client ? `https://${AWS_S3_PUBLIC_BUCKET}.s3.${AWS_REGION ?? 'us-east-1'}.amazonaws.com` : undefined
 
 /*router.get('/', async (req, res) => {
   try {
@@ -25,7 +34,10 @@ router.get('/:portfolioId', async (req, res) => {
       params: { portfolioId }
     } = req
     const portfolio = await portfolioController.getById(portfolioId)
-    res.status(200).send({ portfolio })
+    res.status(200).send({
+      portfolio,
+      ...(useS3Client && { bucket })
+    })
   } catch (e) {
     errorHandler(res, e)
   }
@@ -37,7 +49,10 @@ router.post('/:id', parseFilesMiddleware, validateUpSertPortfolioRequestSchema, 
       body, params: { id }
     } = req
     const updatedPortfolio = await portfolioController.updatePortfolio(id, body)
-    res.status(200).send({ portfolio: updatedPortfolio })
+    res.status(200).send({
+      portfolio: updatedPortfolio,
+      ...(useS3Client && { bucket })
+   })
   } catch (e) {
     errorHandler(res, e)
   }

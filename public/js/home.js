@@ -8,6 +8,7 @@
  */
 
 let portfolio
+let activeBucket = false
 const API_DOMAIN = '/api/v1'
 
 const defaultPortfolio = /*localStorage.getItem('portfolio') && JSON.parse(localStorage.getItem('portfolio')) || */{
@@ -25,7 +26,7 @@ const setInformation = (info) => {
   let userFullNameElement = $('#user-full-name')
   let userExpSummaryElement = $('#user-experience')
   let userTimelineTitleElement = $('#user-timeline-title')
-  portfolio?.imageUrl && userImageElement.attr('src', portfolio.imageUrl ?? defaultPortfolio.imageUrl)
+  portfolio?.imageUrl && userImageElement.attr('src', portfolio.imageUrl ? (activeBucket ? `${activeBucket}/${portfolio.imageUrl}` : defaultPortfolio.imageUrl) : defaultPortfolio.imageUrl)
   userFullNameElement.text(`${portfolio.names} ${portfolio.lastNames}`)
   userTimelineTitleElement.text(`${portfolio.names}'s Timeline`)
   userExpSummaryElement.html(portfolio?.experienceSummary.replaceAll('\r\n', '<br>') ?? '')
@@ -47,6 +48,9 @@ const getPortfolio = () => {
     },
     success: function (response, extStatus, jqXHR) {
       console.log(`Response: ${JSON.stringify(response)}`)
+      if (response?.bucket && false !== response?.bucket) {
+        activeBucket = response.bucket
+      }
       setInformation(response ?? undefined)
       getTweets(response?.portfolio)
     }
@@ -86,10 +90,13 @@ const savePortfolio = () => {
     contentType: false,
     processData: false,
     timeout: 120000,
-    success: function (updatedPortfolio) {
+    success: function (response) {
       $('#editPortfolioModal').modal('hide')
-      portfolio?.twitterUserName !== updatedPortfolio.portfolio?.twitterUserName && getTweets(updatedPortfolio.portfolio)
-      setInformation({ portfolio: { ...portfolio, ...updatedPortfolio.portfolio } })
+      if (response?.bucket && false !== response?.bucket) {
+        activeBucket = response.bucket
+      }
+      portfolio?.twitterUserName !== response.portfolio?.twitterUserName && getTweets(response.portfolio)
+      setInformation({ portfolio: { ...portfolio, ...response.portfolio } })
     },
     error: function (jqXHR) {
       if (typeof jqXHR != 'undefined' && jqXHR != null) {
