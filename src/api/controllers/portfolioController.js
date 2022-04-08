@@ -2,7 +2,13 @@ const DbClient = require('../repository/DbClient')
 const { getUserByUserName: twUserByUserName } = require('../../common/twitterApi')
 const { InvalidRequestError, SystemError } = require('../common/customErrors')
 
-const { DIR_TO_SAVE_FILES } = process.env
+const {
+  DIR_TO_SAVE_FILES,
+  AWS_ACCESS_KEY_ID: accessKeyId,
+  AWS_SECRET_ACCESS_KEY: secretAccessKey
+} = process.env
+
+const useS3Client = Boolean(accessKeyId) && Boolean(secretAccessKey)
 
 const fileServerHelper = require('../helpers/fileServerHelper')
 const logger = require('../config/logger/logger')
@@ -35,13 +41,13 @@ async function upSertPortfolio(portfolioId, body) {
   if (file) {
     const { fileName, ext } = isValidateImageFile(file)
     const wasSaved = await fileServerHelper.saveFileInServer(portfolioId, file, fileName, ext)
-    if (typeof wasSaved !== 'undefined') {
+    if (!useS3Client && typeof wasSaved !== 'undefined') {
       throw new SystemError(`Error saving file : ${wasSaved.message}`)
     }
     if (portfolio?.imageUrl) {
       await fileServerHelper.deleteFileInServer(portfolio.imageUrl)
     }
-    imageUrl = `${DIR_TO_SAVE_FILES}/${portfolioId}/${fileName}.${ext}`
+    imageUrl = `${DIR_TO_SAVE_FILES}/${portfolioId}-${fileName}.${ext}`
   }
   let twitterUserId, twitterUser
   if (twitterUserName && twitterUserName !== portfolio?.twitterUserName) {
