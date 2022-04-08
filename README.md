@@ -8,7 +8,7 @@ The project could work with mongodb / mongoose / dynamodb, by default works with
 
 > **Note**
 >
-> The UI use fs to write the portfolio image **in local**, I'm working in integrate S3 as storage service.
+> The UI use fs to write the portfolio image **in local**, also works with S3 as storage service but you must to set AWS_S3_PUBLIC_BUCKET in your .env file.
 
 ## Relevant Information
 
